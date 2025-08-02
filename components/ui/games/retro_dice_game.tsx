@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { DollarSign, Plus, Minus, TrendingUp, TrendingDown, RotateCcw } from 'lucide-react';
 
 interface HistoryEntry {
@@ -23,6 +23,15 @@ export default function RetroDiceGame() {
   const [isRolling, setIsRolling] = useState(false);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [currentRoll, setCurrentRoll] = useState(50);
+  
+  // Audio reference for dice rolling sound
+  const diceAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Initialize audio on component mount
+  useEffect(() => {
+    diceAudioRef.current = new Audio('/sounds/dice.mp3');
+    diceAudioRef.current.volume = 0.6; // Set volume to 60%
+  }, []);
 
   // Calculate win chance and multiplier
   const getWinChance = () => {
@@ -51,6 +60,16 @@ export default function RetroDiceGame() {
 
     setIsRolling(true);
     setBalance(prev => prev - betAmount);
+
+    // Play dice rolling sound
+    if (diceAudioRef.current) {
+      try {
+        diceAudioRef.current.currentTime = 0; // Reset audio to start
+        await diceAudioRef.current.play();
+      } catch (error) {
+        console.log('Dice audio playback failed:', error);
+      }
+    }
 
     // Simulate rolling animation
     let animationCount = 0;
@@ -144,19 +163,28 @@ export default function RetroDiceGame() {
               disabled={isRolling}
               className="bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all duration-100 p-2 disabled:opacity-50"
             >
-              <Minus className="w-4 h-4" />
+              <Minus className="w-4 h-4 text-black" />
             </button>
             
-            <div className="bg-purple-500 border-2 border-black px-4 py-2 flex-1 text-center">
-              <span className="text-xl font-black text-black">${betAmount}</span>
-            </div>
+            <input
+              type="number"
+              value={betAmount}
+              onChange={(e) => {
+                const value = parseInt(e.target.value) || 0;
+                setBetAmount(Math.max(1, Math.min(balance, value)));
+              }}
+              disabled={isRolling}
+              className="bg-purple-500 border-2 border-black px-4 py-2 flex-1 text-center text-xl font-black text-black focus:outline-none focus:ring-2 focus:ring-purple-300 disabled:opacity-50"
+              min="1"
+              max={balance}
+            />
             
             <button
               onClick={() => setBetAmount(Math.min(balance, betAmount + 1))}
               disabled={isRolling}
               className="bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all duration-100 p-2 disabled:opacity-50"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 text-black" />
             </button>
           </div>
 

@@ -17,11 +17,15 @@ export default function RetroMinesGame() {
   // Audio references for sounds
   const bombAudioRef = useRef<HTMLAudioElement | null>(null);
   const clickAudioRef = useRef<HTMLAudioElement | null>(null);
+  const cashoutAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Initialize audio on component mount
   useEffect(() => {
     bombAudioRef.current = new Audio('/sounds/bomb.mp3');
     bombAudioRef.current.volume = 0.6; // Set volume to 60%
+    
+    cashoutAudioRef.current = new Audio('/sounds/cashout.mp3');
+    cashoutAudioRef.current.volume = 0.6; // Set volume to 60%
     
     // Create a simple click sound using Web Audio API
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -148,7 +152,17 @@ export default function RetroMinesGame() {
   };
 
   // Cash out
-  const cashOut = () => {
+  const cashOut = async () => {
+    // Play cashout sound
+    if (cashoutAudioRef.current) {
+      try {
+        cashoutAudioRef.current.currentTime = 0; // Reset audio to start
+        await cashoutAudioRef.current.play();
+      } catch (error) {
+        console.log('Cashout audio playback failed:', error);
+      }
+    }
+    
     setBalance(prev => prev + stakeAmount + currentWinnings);
     setGameState('setup');
   };
@@ -238,18 +252,26 @@ export default function RetroMinesGame() {
                   onClick={() => setStakeAmount(Math.max(5, stakeAmount - 5))}
                   className="bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all duration-100 p-2"
                 >
-                  <Minus className="w-4 h-4" />
+                  <Minus className="w-4 h-4 text-black" />
                 </button>
                 
-                <div className="bg-purple-500 border-2 border-black px-4 py-2 flex-1 text-center">
-                  <span className="text-xl font-black text-black">${stakeAmount}</span>
-                </div>
+                <input
+                  type="number"
+                  value={stakeAmount}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value) || 0;
+                    setStakeAmount(Math.max(5, Math.min(500, value)));
+                  }}
+                  className="bg-purple-500 border-2 border-black px-4 py-2 flex-1 text-center text-xl font-black text-black focus:outline-none focus:ring-2 focus:ring-purple-300"
+                  min="5"
+                  max="500"
+                />
                 
                 <button
                   onClick={() => setStakeAmount(Math.min(500, stakeAmount + 5))}
                   className="bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all duration-100 p-2"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-4 h-4 text-black" />
                 </button>
               </div>
 
@@ -284,18 +306,26 @@ export default function RetroMinesGame() {
                   onClick={() => setMineCount(Math.max(1, mineCount - 1))}
                   className="bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all duration-100 p-2"
                 >
-                  <Minus className="w-4 h-4" />
+                  <Minus className="w-4 h-4 text-black" />
                 </button>
                 
-                <div className="bg-purple-500 border-2 border-black px-4 py-2 flex-1 text-center">
-                  <span className="text-xl font-black text-black">{mineCount}</span>
-                </div>
+                <input
+                  type="number"
+                  value={mineCount}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value) || 0;
+                    setMineCount(Math.max(1, Math.min(10, value)));
+                  }}
+                  className="bg-purple-500 border-2 border-black px-4 py-2 flex-1 text-center text-xl font-black text-black focus:outline-none focus:ring-2 focus:ring-purple-300"
+                  min="1"
+                  max="10"
+                />
                 
                 <button
                   onClick={() => setMineCount(Math.min(10, mineCount + 1))}
                   className="bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all duration-100 p-2"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-4 h-4 text-black" />
                 </button>
               </div>
 

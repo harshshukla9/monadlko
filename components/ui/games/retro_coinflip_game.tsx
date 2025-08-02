@@ -166,19 +166,28 @@ export default function RetroCoinFlipGame() {
               disabled={isFlipping}
               className="bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all duration-100 p-2 disabled:opacity-50"
             >
-              <Minus className="w-4 h-4" />
+              <Minus className="w-4 h-4 text-black" />
             </button>
             
-            <div className="bg-purple-500 border-2 border-black px-4 py-2 flex-1 text-center">
-              <span className="text-xl font-black text-black">${betAmount}</span>
-            </div>
+            <input
+              type="number"
+              value={betAmount}
+              onChange={(e) => {
+                const value = parseInt(e.target.value) || 0;
+                setBetAmount(Math.max(10, Math.min(balance, value)));
+              }}
+              disabled={isFlipping}
+              className="bg-purple-500 border-2 border-black px-4 py-2 flex-1 text-center text-xl font-black text-black focus:outline-none focus:ring-2 focus:ring-purple-300 disabled:opacity-50"
+              min="10"
+              max={balance}
+            />
             
             <button
               onClick={() => setBetAmount(Math.min(balance, betAmount + 10))}
               disabled={isFlipping}
               className="bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all duration-100 p-2 disabled:opacity-50"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 text-black" />
             </button>
           </div>
 

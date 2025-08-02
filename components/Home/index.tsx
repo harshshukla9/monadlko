@@ -38,7 +38,7 @@ export function Demo() {
       <div className="text-center space-y-3">
         <div className="bg-purple-500 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 mx-4">
           <h2 className="text-2xl font-black text-black tracking-wider">
-            🎮 CHOOSE YOUR GAME 🎮
+            🎮MAKE SOME MONEY🎮
           </h2>
         </div>
         <div className="bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] p-3 mx-6">
@@ -219,7 +219,7 @@ export function Demo() {
       <div className="px-4 py-4 text-center">
         <div className="bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] px-4 py-2 inline-block">
           <p className="text-xs font-black text-black tracking-wider">
-            © 2024 RETRO CASINO • PLAY RESPONSIBLY
+            © MONAD CASINO • PLAY RESPONSIBLY
           </p>
         </div>
       </div>
